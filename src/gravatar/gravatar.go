@@ -1,28 +1,28 @@
 package gravatar
 
 import (
-	"fmt"
-	"strings"
 	"crypto/md5"
-	"net/url"
-	"net/http"
+	"fmt"
 	"io/ioutil"
+	"net/http"
+	"net/url"
+	"strings"
 )
 
 type Client struct {
-	rating, defImg string
+	rating, defImg   string
 	forceDef, secure bool
-	size int16
+	size             int16
 }
 
-func NewClient () *Client {
+func NewClient() *Client {
 	//initialize stuff
-	client:=&Client{}
+	client := &Client{}
 	client.rating = "g"
 	client.defImg = "404"
 	client.forceDef = false
 	client.secure = true
-	client.size=100
+	client.size = 100
 	return client
 }
 
@@ -31,7 +31,7 @@ func (c *Client) SetRating(rating string) {
 	c.rating = rating
 }
 
-//Sets the policy for default images. Options are 404 (error), [url], 
+//Sets the policy for default images. Options are 404 (error), [url],
 //mm, identicon, monsterid, wavatar, retro and blank.
 func (c *Client) SetDefaultImage(defImg string) {
 	c.defImg = defImg
@@ -53,7 +53,7 @@ func (c *Client) SetSize(size int16) {
 }
 
 //This function returns the url of the gravatar
-func (c *Client) GetUrl(email string) string {
+func (c *Client) Url(email string) string {
 	//create hash
 	hash := md5.New()
 	hash.Write([]byte(strings.ToLower(strings.TrimSpace(email))))
@@ -61,17 +61,17 @@ func (c *Client) GetUrl(email string) string {
 	//build url
 	gurl := "http"
 	if c.secure {
-	gurl+=fmt.Sprintf("s://secure.gravatar.com/avatar/%x?", md5str)
+		gurl += fmt.Sprintf("s://secure.gravatar.com/avatar/%x?", md5str)
 	} else {
-		gurl+=fmt.Sprintf("://gravatar.com/avatar/%x?", md5str)
+		gurl += fmt.Sprintf("://gravatar.com/avatar/%x?", md5str)
 	}
-	gurl+=fmt.Sprintf("s=%d&d=%s&f=%t&r=%s", c.size, url.QueryEscape(c.defImg), c.forceDef, c.rating)
+	gurl += fmt.Sprintf("s=%d&d=%s&f=%t&r=%s", c.size, url.QueryEscape(c.defImg), c.forceDef, c.rating)
 	return gurl
 }
 
-func (c *Client) GetImg(email string) []byte {
+func (c *Client) Img(email string) []byte {
 	//get url
-	gurl:=c.GetUrl(email)
+	gurl := c.Url(email)
 	//fetch avatar
 	req, err := http.Get(gurl)
 	if err != nil {
