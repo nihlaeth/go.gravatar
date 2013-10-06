@@ -3,6 +3,7 @@ package gravatar
 import (
 	"crypto/md5"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -62,7 +63,8 @@ func (c *Client) SetSize(size int16) {
 func (c *Client) URL(email string) string {
 	//create hash
 	hash := md5.New()
-	hash.Write([]byte(strings.ToLower(strings.TrimSpace(email))))
+	//hash.Write([]byte(strings.ToLower(strings.TrimSpace(email))))
+	io.WriteString(hash, strings.ToLower(strings.TrimSpace(email)))
 	md5str := string(hash.Sum([]byte{}))
 	//build url
 	gurl := "http"
