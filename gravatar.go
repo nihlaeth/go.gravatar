@@ -9,12 +9,16 @@ import (
 	"strings"
 )
 
+//Client is a container with gravatar
+//settings
 type Client struct {
 	rating, defImg   string
 	forceDef, secure bool
 	size             int16
 }
 
+//NewClient initializes the client
+//with default values
 func NewClient() *Client {
 	//initialize stuff
 	client := &Client{}
@@ -26,34 +30,36 @@ func NewClient() *Client {
 	return client
 }
 
-//This sets the lowest rating allowed. Options are g, pg, r and x.
+//SetRating sets the lowest rating allowed. 
+//Options are g, pg, r and x.
 func (c *Client) SetRating(rating string) {
 	c.rating = rating
 }
 
-//Sets the policy for default images. Options are 404 (error), [url],
+//SetDefaultImage sets the policy for default images. 
+//Options are 404 (error), [url],
 //mm, identicon, monsterid, wavatar, retro and blank.
 func (c *Client) SetDefaultImage(defImg string) {
 	c.defImg = defImg
 }
 
-//If this is set to true, the default image will always be returned.
-func (c *Client) SetForeDefault(forceDef bool) {
+//SetForceDefault: if this is set to true, the default image will always be returned.
+func (c *Client) SetForceDefault(forceDef bool) {
 	c.forceDef = forceDef
 }
 
-//Use ssl?
+//SetSecure determins if ssl should be used.
 func (c *Client) SetSecure(secure bool) {
 	c.secure = secure
 }
 
-//Size of the returned avatar. Must be an integer between 1 and 2048.
+//SetSize sets the size of the returned avatar. Must be an integer between 1 and 2048.
 func (c *Client) SetSize(size int16) {
 	c.size = size
 }
 
-//This function returns the url of the gravatar
-func (c *Client) Url(email string) string {
+//URL returns the url of the gravatar.
+func (c *Client) URL(email string) string {
 	//create hash
 	hash := md5.New()
 	hash.Write([]byte(strings.ToLower(strings.TrimSpace(email))))
@@ -72,9 +78,10 @@ func (c *Client) Url(email string) string {
 	return gurl
 }
 
-func (c *Client) Img(email string) []byte {
+//Image fetches the raw image data of the gravatar.
+func (c *Client) Image(email string) []byte {
 	//get url
-	gurl := c.Url(email)
+	gurl := c.URL(email)
 	//fetch avatar
 	req, err := http.Get(gurl)
 	if err != nil {
