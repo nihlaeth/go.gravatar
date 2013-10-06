@@ -65,7 +65,10 @@ func (c *Client) Url(email string) string {
 	} else {
 		gurl += fmt.Sprintf("://gravatar.com/avatar/%x?", md5str)
 	}
-	gurl += fmt.Sprintf("s=%d&d=%s&f=%t&r=%s", c.size, url.QueryEscape(c.defImg), c.forceDef, c.rating)
+	gurl += fmt.Sprintf("s=%d&d=%s&r=%s", c.size, url.QueryEscape(c.defImg), c.rating)
+	if c.forceDef {
+		gurl += fmt.Sprintf("&f=%t", c.forceDef)
+	}
 	return gurl
 }
 
